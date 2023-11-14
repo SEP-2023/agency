@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-offers',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OffersComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+  }
+  redirect(){
+      this.router.navigate(['/project1']);
+  }
+  goToLink(url: string){
+    window.open(url, "_blank");
   }
 
 }
