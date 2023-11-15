@@ -13,9 +13,7 @@ export class OffersComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  redirect(){
-      this.router.navigate(['/project1']);
-  }
+
   goToLink(url: string){
     this.agencyService
       .createTransaction("20", "paypal")

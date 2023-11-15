@@ -4,7 +4,6 @@ import {OffersComponent} from "./pages/offers/offers.component";
 
 const routes: Routes = [
   { path: '', component: OffersComponent },
-  { path: 'project1', redirectTo: 'http://localhost:4200/', pathMatch: 'full' },
 
 ];
 
