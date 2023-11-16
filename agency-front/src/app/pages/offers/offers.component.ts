@@ -11,22 +11,21 @@ export class OffersComponent implements OnInit {
 
   constructor(private router: Router,private agencyService: AgencyService) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   goToLink(url: string){
     this.agencyService
-      .createTransaction("20", "paypal")
+      .createTransaction("400")
       .subscribe(
         (data) => {
-          alert('OK'), (window.location.href = data.url);
+          window.location.href = `${url}?price=400&transactionId=${data.transactionId}&agencyId=nekiId`;
         },
         (error) => {
           console.log(error);
           alert('Greska');
         }
       );
-    window.open(url, "_blank");
+    //window.open(url, "_blank");
   }
 
 }

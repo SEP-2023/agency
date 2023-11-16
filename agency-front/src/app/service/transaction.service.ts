@@ -11,10 +11,9 @@ export class AgencyService {
 
   url = environment.agency_service_url;
 
-  createTransaction(amount:string, paymentType: string){
+  createTransaction(amount:string){
     let body = {
       amount:amount,
-      paymentType: paymentType,
       agencyId: "nekiAgency",
       currency: "USD"
     }

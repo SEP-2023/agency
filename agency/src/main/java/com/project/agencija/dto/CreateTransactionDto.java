@@ -8,5 +8,4 @@ public class CreateTransactionDto {
     private String agencyId;
     private Double amount;
     private String currency;
-    private String paymentType;
 }

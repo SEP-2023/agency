@@ -23,7 +23,6 @@ public class TransactionService {
         t.setTransactionStatus(TransactionStatus.CREATED);
         t.setCurrency(dto.getCurrency());
         t.setAgencyId(dto.getAgencyId());
-        t.setPaymentType(dto.getPaymentType());
         this.repository.save(t);
         TransactionResponseDto res = new TransactionResponseDto();
         res.setTransactionId(uuid.toString());
