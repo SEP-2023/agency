@@ -34,6 +34,9 @@ public class Transaction {
     @Column(name = "status")
     private TransactionStatus transactionStatus;
 
+    @Column(name = "isSubscription")
+    private Boolean isSubscription = false;
+
 }
 
 

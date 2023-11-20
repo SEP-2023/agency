@@ -11,11 +11,12 @@ export class AgencyService {
 
   url = environment.agency_service_url;
 
-  createTransaction(amount:string){
+  createTransaction(amount:string, isSubscription: boolean){
     let body = {
       amount:amount,
       agencyId: "nekiAgency",
-      currency: "USD"
+      currency: "USD",
+      isSubscription: isSubscription
     }
     return this._http.post<any>(`${this.url}/create-transaction`,body, {
       headers: new HttpHeaders({

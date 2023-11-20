@@ -15,7 +15,7 @@ export class OffersComponent implements OnInit {
 
   goToLink(url: string){
     this.agencyService
-      .createTransaction("400")
+      .createTransaction("400", false)
       .subscribe(
         (data) => {
           window.location.href = `${url}?price=400&transactionId=${data.transactionId}&agencyId=nekiId`;
@@ -26,6 +26,21 @@ export class OffersComponent implements OnInit {
         }
       );
     //window.open(url, "_blank");
+  }
+
+  goToSubscriptionLink(url: string){
+    this.agencyService
+      .createTransaction("400", true)
+      .subscribe(
+        (data) => {
+          window.location.href = `${url}?price=1000&transactionId=${data.transactionId}&agencyId=nekiId&frequency=year`;
+        },
+        (error) => {
+          console.log(error);
+          alert('Greska');
+        }
+      );
+   // window.open(url, "_blank");
   }
 
 }
