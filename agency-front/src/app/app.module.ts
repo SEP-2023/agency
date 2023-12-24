@@ -11,12 +11,19 @@ import { AppRoutingModule } from './app-routing.module';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatCardModule} from "@angular/material/card";
 import {HttpClientModule} from "@angular/common/http";
+import { LoginRegistrationComponent } from './pages/login-registration/login-registration.component';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSelectModule} from "@angular/material/select";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    OffersComponent
+    OffersComponent,
+    LoginRegistrationComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +33,13 @@ import {HttpClientModule} from "@angular/common/http";
     AppRoutingModule,
     MatGridListModule,
     MatCardModule,
-    HttpClientModule
+    HttpClientModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

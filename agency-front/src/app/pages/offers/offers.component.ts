@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
-import {AgencyService} from "../../service/transaction.service";
+import {AgencyService} from "../../service/transaction/transaction.service";
 
 @Component({
   selector: 'app-offers',
