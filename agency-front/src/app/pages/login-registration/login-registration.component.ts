@@ -55,7 +55,8 @@ export class LoginRegistrationComponent implements OnInit {
   }
 
   registerUser() {
-    if(this.user.name == '' || this.user.surname == '' || this.user.password.length < 6){
+    console.log(this.user)
+    if(this.user.name == '' || this.user.surname == ''){
       alert('Please enter all fields.');
       return;
     }
