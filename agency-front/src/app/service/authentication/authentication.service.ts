@@ -35,4 +35,16 @@ export class AuthenticationService {
     const newUrl = this.url + '/logout';
     return this._http.post<HttpStatusCode>(newUrl, token);
   }
+
+  getCurrentUser(){
+    const newUrl = this.url + '/current';
+    console.log(sessionStorage.getItem('accessToken'));
+    return this._http.get<HttpStatusCode>(newUrl,{
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Authorization': `Bearer ` + sessionStorage.getItem('accessToken')
+      })
+    });
+  }
 }

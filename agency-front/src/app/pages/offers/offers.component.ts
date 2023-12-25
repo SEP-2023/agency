@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 import {AgencyService} from "../../service/transaction/transaction.service";
+import {AuthenticationService} from "../../service/authentication/authentication.service";
 
 @Component({
   selector: 'app-offers',
@@ -9,9 +10,16 @@ import {AgencyService} from "../../service/transaction/transaction.service";
 })
 export class OffersComponent implements OnInit {
 
-  constructor(private router: Router,private agencyService: AgencyService) { }
+  constructor(private router: Router,private agencyService: AgencyService,private authenticationService: AuthenticationService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authenticationService.getCurrentUser().subscribe({
+      next(data)
+        {console.log(data)},
+      error(data){
+        console.log(data)
+      }});
+  }
 
   goToLink(url: string){
     this.agencyService

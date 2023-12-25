@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -24,6 +25,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping(value = "api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,17 +93,15 @@ public class AuthenticationController{
         if(user.getDeleted()){
             return ResponseEntity.badRequest().body(null);
         }
-        String fingerprint = tokenUtils.generateFingerprint();
-        String jwt = tokenUtils.generateToken(user, fingerprint);
+        String jwt = tokenUtils.generateToken(user.getUsername());
         int expiresIn = tokenUtils.getExpiredIn();
 
-        // Kreiraj cookie
-        //String cookie = "__Secure-Fgp=" + fingerprint + "; SameSite=Strict; HttpOnly; Path=/; Secure";  // kasnije mozete probati da postavite i ostale atribute, ali tek nakon sto podesite https
-        String cookie = "Fingerprint=" + fingerprint + "; SameSite=Strict; HttpOnly; Path=/; Secure";
+        return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+    }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Set-Cookie", cookie);
-        //loggerService.logInfo("INFO - Korisnik sa email adresom " + userInfoDTO.getEmail() + " je uspjesno prijavljen");
-        return ResponseEntity.ok().headers(headers).body(new UserTokenState(jwt, expiresIn));
+    @GetMapping(value = "/current")
+    @PreAuthorize("hasRole('ROLE_GOUVERNMENT')")
+    public ResponseEntity<Client> getCurrentUser(Principal user){
+        return new ResponseEntity<>(userService.findByEmail(user.getName()),HttpStatus.OK);
     }
 }

@@ -41,7 +41,7 @@ public class TokenUtils {
     private final SecureRandom secureRandom = new SecureRandom();
 
     public String generateToken(String username) {
-        String appName = "SmartHome";
+        String appName = "Agency";
         return Jwts.builder()
                 .setIssuer(appName)
                 .setSubject(username)
@@ -161,62 +161,12 @@ public class TokenUtils {
     }
 
 
-    public Boolean validateToken(String token, UserDetails userDetails, String fingerprint) {
-        Client user = (Client) userDetails;
+    public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
-        final Date created = getIssuedAtDateFromToken(token);
-
-        // Token je validan kada:
-        boolean isUsernameValid = username != null // korisnicko ime nije null
-                && username.equals(userDetails.getUsername()); // korisnicko ime iz tokena se podudara sa korisnickom imenom koje pise u bazi
-
-
-        // Validiranje fingerprint-a
-        System.out.println("FGP ===> " + fingerprint);
-        boolean isFingerprintValid = false;
-        boolean isAlgorithmValid = false;
-        if (fingerprint != null) {
-            isFingerprintValid = validateTokenFingerprint(fingerprint, token);
-            isAlgorithmValid = SIGNATURE_ALGORITHM.getValue().equals(getAlgorithmFromToken(token));
-        }
-        return isUsernameValid && isFingerprintValid && isAlgorithmValid;
+        return username != null // korisnicko ime nije null
+                && username.equals(userDetails.getUsername());
     }
 
-    private String getAlgorithmFromToken(String token) {
-        String algorithm;
-        try {
-            algorithm = Jwts.parser()
-                    .setSigningKey(secret)
-                    .parseClaimsJws(token)
-                    .getHeader()
-                    .getAlgorithm();
-        } catch (ExpiredJwtException ex) {
-            throw ex;
-        } catch (Exception e) {
-            algorithm = null;
-        }
-        return algorithm;
-    }
-
-    private boolean validateTokenFingerprint(String fingerprint, String token) {
-        // Hesiranje fingerprint-a radi poređenja sa hesiranim fingerprint-om u tokenu
-        String fingerprintHash = generateFingerprintHash(fingerprint);
-        String fingerprintFromToken = getFingerprintFromToken(token);
-        return fingerprintFromToken.equals(fingerprintHash);
-    }
-
-    private String getFingerprintFromToken(String token) {
-        String fingerprint;
-        try {
-            final Claims claims = this.getAllClaimsFromToken(token);
-            fingerprint = claims.get("userFingerprint", String.class);
-        } catch (ExpiredJwtException ex) {
-            throw ex;
-        } catch (Exception e) {
-            fingerprint = null;
-        }
-        return fingerprint;
-    }
 
     private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
@@ -231,12 +181,6 @@ public class TokenUtils {
         return request.getHeader(authHeader);
     }
 
-    public String generateFingerprint() {
-        // Generisanje random string-a koji ce predstavljati fingerprint za korisnika
-        byte[] randomFgp = new byte[50];
-        this.secureRandom.nextBytes(randomFgp);
-        return DatatypeConverter.printHexBinary(randomFgp);
-    }
 
     private String generateFingerprintHash(String userFingerprint) {
         // Generisanje hash-a za fingerprint koji stavljamo u token (sprecavamo XSS da procita fingerprint i sam postavi ocekivani cookie)
@@ -250,18 +194,6 @@ public class TokenUtils {
         }
     }
 
-    public String getFingerprintFromCookie(HttpServletRequest request) {
-        String userFingerprint = null;
-        if (request.getCookies() != null && request.getCookies().length > 0) {
-            Cookie[] cookies = request.getCookies();
-            Optional<Cookie> cookie = Arrays.stream(cookies).filter(c -> "Fingerprint".equals(c.getName())).findFirst();
-
-            if (cookie.isPresent()) {
-                userFingerprint = cookie.get().getValue();
-            }
-        }
-        return userFingerprint;
-    }
 
 
 }

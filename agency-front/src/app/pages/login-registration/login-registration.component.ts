@@ -43,6 +43,9 @@ export class LoginRegistrationComponent implements OnInit {
         return;
       }
       this.loginData = data;
+      sessionStorage.setItem('accessToken', this.loginData.accessToken);
+      sessionStorage.setItem('expiresIn', this.loginData.expiresIn);
+      window.location.href = '/offers';
     } catch (error) {
       //this.toastr.error('Wrong username or password', 'Upss..');
       alert('Wrong username or password')

@@ -34,7 +34,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String username;
         String authToken = tokenUtils.getToken(request);
-        String fingerprint = tokenUtils.getFingerprintFromCookie(request);
 
         try {
             if (authToken != null) {
@@ -44,7 +43,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     if (userDetails == null)
                         throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
 
-                    if (Boolean.TRUE.equals(tokenUtils.validateToken(authToken, userDetails, fingerprint))) {
+                    if (Boolean.TRUE.equals(tokenUtils.validateToken(authToken, userDetails))) {
                         TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
                         authentication.setToken(authToken);
                         SecurityContextHolder.getContext().setAuthentication(authentication);

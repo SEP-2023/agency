@@ -15,6 +15,6 @@ public class Config implements WebMvcConfigurer {
 //                .allowedOrigins("https://localhost:" + env.getProperty("frontend.port"))
                 //.allowedOrigins("http://localhost:" + env.getProperty("frontend.port"))
                 .allowedOrigins("*")
-                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE");
-    }
+                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE")
+                .allowedHeaders("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization");}
 }
