@@ -39,7 +39,7 @@ public class Client implements UserDetails {
     private Boolean deleted = false;
 
     @Column(name = "enabled")
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
@@ -70,7 +70,7 @@ public class Client implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override

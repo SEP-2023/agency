@@ -23,7 +23,12 @@ export class AuthenticationService {
 
   loginUser(loginInfo: LoginInfo) {
     const newUrl = this.url + '/login';
-    return this._http.post<any>(newUrl, loginInfo);
+    return this._http.post<any>(newUrl, loginInfo,{
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      }),
+    });
   }
 
   logout(token: string) {
