@@ -22,7 +22,8 @@ export class AgencyService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-      }),
+        'Authorization': `Bearer ` + sessionStorage.getItem('accessToken')
+      })
     });
 
   }
