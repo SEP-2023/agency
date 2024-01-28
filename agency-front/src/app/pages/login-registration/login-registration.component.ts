@@ -43,6 +43,9 @@ export class LoginRegistrationComponent implements OnInit {
         return;
       }
       this.loginData = data;
+      sessionStorage.setItem('accessToken', this.loginData.accessToken);
+      sessionStorage.setItem('expiresIn', this.loginData.expiresIn);
+      window.location.href = '/offers';
     } catch (error) {
       //this.toastr.error('Wrong username or password', 'Upss..');
       alert('Wrong username or password')
@@ -55,7 +58,8 @@ export class LoginRegistrationComponent implements OnInit {
   }
 
   registerUser() {
-    if(this.user.name == '' || this.user.surname == '' || this.user.password.length < 6){
+    console.log(this.user)
+    if(this.user.name == '' || this.user.surname == ''){
       alert('Please enter all fields.');
       return;
     }

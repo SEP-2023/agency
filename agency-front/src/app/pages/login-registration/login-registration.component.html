@@ -28,7 +28,7 @@
               <mat-spinner color="warn"></mat-spinner>
             </div>
 
-            <form (ngSubmit)="registerUser()" [formGroup]="form" *ngIf="!isRegistered">
+            <div *ngIf="!isRegistered">
 
               <div class="row pt-3 px-2">
 
@@ -40,13 +40,13 @@
               </div>
 
               <div class="pt-3">
-                <button [disabled]="!form.valid" class="btn btn-dark" type="submit">
+                <button (click)="registerUser()" class="btn btn-dark" type="submit">
                   Register
                 </button>
               </div>
 
 
-            </form>
+            </div>
           </mat-card-content>
 
         </div>
