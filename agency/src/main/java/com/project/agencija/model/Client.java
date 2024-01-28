@@ -41,6 +41,12 @@ public class Client implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled = true;
 
+    @Column(name = "attempts")
+    private Integer failedLoginAttempts = 0;
+
+    @Column(name = "locked")
+    private Boolean locked = false;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -70,7 +76,7 @@ public class Client implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !locked;
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -36,4 +37,30 @@ public class UserService implements UserDetailsService {
         return this.userRepository.findAll();
     }
 
+    public void incrementLoginFailedAttempts(String email) {
+        Client user = findByEmail(email);
+        if (user != null){
+            user.setFailedLoginAttempts(user.getFailedLoginAttempts()+1);
+            if (user.getFailedLoginAttempts() == 3){
+                String message = "ERROR - Nalog korisnika sa email adresom " + email + " je zakljucan";
+                //loggerService.logError(message);
+                user.setLocked(true);
+                unlockUser(user);
+            }
+            save(user);
+        }
+    }
+
+    private void unlockUser(Client user) {
+        Timer timer = new Timer();
+        CompletableFuture.runAsync(() -> timer.schedule(new TimerTask() {
+            public void run() {
+                user.setLocked(false);
+                user.setFailedLoginAttempts(0);
+                save(user);
+                System.out.println("30 minutes have passed!");
+                //loggerService.logInfo("INFO - Nalog korisnika sa email adresom " + user.getEmail() + " is otkljucan");
+            }
+        }, 30 * 60 * 1000L));
+    }
 }

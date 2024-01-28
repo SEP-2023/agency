@@ -163,8 +163,10 @@ public class TokenUtils {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
+        Date exp = getExpirationDateFromToken(token);
+        Date today = new Date();
         return username != null // korisnicko ime nije null
-                && username.equals(userDetails.getUsername());
+                && username.equals(userDetails.getUsername()) && exp.after(today);
     }
 
 
@@ -175,6 +177,7 @@ public class TokenUtils {
     public int getExpiredIn() {
         return expiresIn;
     }
+
 
     public String getAuthHeaderFromHeader(HttpServletRequest request) {
         String authHeader = "Authorization";

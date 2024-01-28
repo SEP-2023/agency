@@ -83,8 +83,7 @@ public class AuthenticationController{
             System.out.println(e.getMessage());
             return  ResponseEntity.ok(null);
         } catch (Exception e){
-            //String message = "ERROR - prijava sa email adresom " + userInfoDTO.getEmail() + " je neuspjesna";
-            //loggerService.logError(message);
+            userService.incrementLoginFailedAttempts(userInfoDTO.getEmail());
             return ResponseEntity.badRequest().body(null);
         }
 
