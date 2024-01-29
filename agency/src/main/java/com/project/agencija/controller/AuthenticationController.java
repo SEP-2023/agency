@@ -60,6 +60,8 @@ public class AuthenticationController{
         }
 
         Client client = modelMapper.map(userRequest, Client.class);
+        client.setLocked(false);
+        client.setFailedLoginAttempts(0);
 
         client.setPassword(passwordEncoder.encode(client.getPassword()));
 
