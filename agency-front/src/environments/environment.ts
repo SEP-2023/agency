@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
-  agency_service_url:"http://localhost:8085",
-  psp_service_url:"http://localhost:8083",
+  // psp_service_url:"http://localhost:8083",
+  // agency_service_url:"http://localhost:8085",
+  agency_service_url:"http://89.216.102.70:8085",
+  psp_service_url:"http://89.216.102.70:8083"
 };
 
 /*
