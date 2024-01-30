@@ -4,6 +4,7 @@ import {AgencyService} from "../../service/transaction/transaction.service";
 import {AuthenticationService} from "../../service/authentication/authentication.service";
 import {PaymentService} from "../../service/payment/payment.service";
 import {AgencyInfoDto} from "../../model/agencyInfoDto";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-offers',
@@ -23,12 +24,12 @@ export class OffersComponent implements OnInit {
       }});
   }
 
-  goToLink(url: string){
+  goToLink(){
     this.agencyService
       .createTransaction("400", false)
       .subscribe(
         (data) => {
-          window.location.href = `${url}?price=400&transactionId=${data.transactionId}&agencyId=nekiId`;
+          window.location.href = `${environment.psp_front_url}?price=400&transactionId=${data.transactionId}&agencyId=nekiId`;
           //gadjamo psp bek
           // var info = new AgencyInfoDto('nekiId',data.transactionId,"400",sessionStorage.getItem("accessToken")??"");
           // this.paymentService.createToken(info).subscribe({
@@ -49,12 +50,12 @@ export class OffersComponent implements OnInit {
     //window.open(url, "_blank");
   }
 
-  goToSubscriptionLink(url: string){
+  goToSubscriptionLink(){
     this.agencyService
       .createTransaction("400", true)
       .subscribe(
         (data) => {
-          window.location.href = `${url}?price=1000&transactionId=${data.transactionId}&agencyId=nekiId&frequency=year`;
+          window.location.href = `${environment.psp_front_url}/subscription-redirect?price=1000&transactionId=${data.transactionId}&agencyId=nekiId&frequency=year`;
         },
         (error) => {
           console.log(error);
