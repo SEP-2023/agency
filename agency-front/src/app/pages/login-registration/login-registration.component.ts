@@ -16,6 +16,7 @@ export class LoginRegistrationComponent implements OnInit {
   loginData: any;
   form: FormGroup = new FormGroup({});
   isRegistered: boolean = false;
+  reenterPass: string = '';
 
   constructor(private formBuilder: FormBuilder,private authenticationService: AuthenticationService) { }
 
@@ -63,19 +64,40 @@ export class LoginRegistrationComponent implements OnInit {
       alert('Please enter all fields.');
       return;
     }
+
+    const emailValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.user.email);
+    if (!emailValid){
+      alert('Email is invalid.')
+      return;
+    }
+
+    // Check for at least one uppercase letter
+    const hasUppercase = /[A-Z]/.test(this.user.password);
+
+    // Check for at least one number
+    const hasNumber = /\d/.test(this.user.password);
+
+    if (this.user.password.length < 8 || !hasNumber || !hasUppercase){
+      alert('Password must contain number, upper letter and be minimum 8 characters long.')
+      return;
+    }
+
+    if (this.user.password != this.reenterPass){
+      alert('Passwords must be same.')
+      return;
+    }
+
     this.isRegistered = true;
 
     this.authenticationService.registerUser(this.user).subscribe({
       next: (data) => {
-        //this.toastr.success('Activation email is sent', 'Info');
-        alert('register')
+        alert('Successfully registered!')
         this.isRegistered = false;
       },
       error: (err) => {
         if (err.status == 400)
-         // this.toastr.error('Use a stronger password.', 'Upss..');
           alert('Use a stronger password.')
-        else //this.toastr.error('Something went wrong', 'Upss..');
+        else
         alert('Something went wrong')
         this.isRegistered = false;
       },
