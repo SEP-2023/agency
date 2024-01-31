@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -18,6 +20,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final LoggerService logger = new LoggerService(this.getClass());
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -42,8 +46,7 @@ public class UserService implements UserDetailsService {
         if (user != null){
             user.setFailedLoginAttempts(user.getFailedLoginAttempts()+1);
             if (user.getFailedLoginAttempts() == 3){
-                String message = "ERROR - Nalog korisnika sa email adresom " + email + " je zakljucan";
-                //loggerService.logError(message);
+                logger.warn(MessageFormat.format("Account locked for the user with email {0}", email));
                 user.setLocked(true);
                 unlockUser(user);
             }
@@ -59,7 +62,7 @@ public class UserService implements UserDetailsService {
                 user.setFailedLoginAttempts(0);
                 save(user);
                 System.out.println("30 minutes have passed!");
-                //loggerService.logInfo("INFO - Nalog korisnika sa email adresom " + user.getEmail() + " is otkljucan");
+                logger.info(MessageFormat.format("Account unlocked for the user with email {0}", user.getEmail()));
             }
         }, 30 * 60 * 1000L));
     }

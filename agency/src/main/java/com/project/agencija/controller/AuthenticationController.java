@@ -4,6 +4,7 @@ import com.project.agencija.dto.ClientRequestDTO;
 import com.project.agencija.dto.UserInfoDTO;
 import com.project.agencija.dto.UserTokenState;
 import com.project.agencija.model.Client;
+import com.project.agencija.service.LoggerService;
 import com.project.agencija.service.RoleService;
 import com.project.agencija.service.UserService;
 import com.project.agencija.util.TokenUtils;
@@ -47,6 +48,7 @@ public class AuthenticationController{
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    private final LoggerService logger = new LoggerService(this.getClass());
 
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -55,7 +57,7 @@ public class AuthenticationController{
     public ResponseEntity<Client> addUser(@RequestBody ClientRequestDTO userRequest) {
         Client existUser = this.userService.findByEmail(userRequest.getEmail());
         if (existUser != null) {
-            //loggerService.logWarning("WARNING - Neuspjesna registracija: korisnik sa email adresom " + userRequest.getEmail() + " vec postoji");
+            logger.warn("Registration failed: user with email " + userRequest.getEmail() + " already exists");
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
 
@@ -65,7 +67,7 @@ public class AuthenticationController{
 
         client.setPassword(passwordEncoder.encode(client.getPassword()));
 
-        //loggerService.logInfo("INFO - Korisnik sa email adresom " + client.getEmail() + " uspjesno registrovan");
+        logger.success("User with email " + client.getEmail() + " successfully registered");
         client.setRoles(roleService.findByName("ROLE_GOVERNMENT"));
         userService.save(client);
         return new ResponseEntity<>(client, HttpStatus.OK);
@@ -79,12 +81,13 @@ public class AuthenticationController{
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     userInfoDTO.getEmail(), userInfoDTO.getPassword()));
         } catch(InternalAuthenticationServiceException e){
-            System.out.println(e.getMessage());
+            logger.error("Failed login for user with email " + userInfoDTO.getEmail());
             return ResponseEntity.badRequest().body(null);
         } catch (DisabledException e){
-            System.out.println(e.getMessage());
+            logger.error("Failed login for user with email " + userInfoDTO.getEmail());
             return  ResponseEntity.ok(null);
         } catch (Exception e){
+            logger.error("Failed login for user with email " + userInfoDTO.getEmail());
             userService.incrementLoginFailedAttempts(userInfoDTO.getEmail());
             return ResponseEntity.badRequest().body(null);
         }
@@ -92,11 +95,13 @@ public class AuthenticationController{
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Client user = (Client) authentication.getPrincipal();
         if(user.getDeleted()){
+            logger.error("User with email " + userInfoDTO.getEmail() + " was deleted");
             return ResponseEntity.badRequest().body(null);
         }
         String jwt = tokenUtils.generateToken(user.getUsername());
         int expiresIn = tokenUtils.getExpiredIn();
 
+        logger.success("User with email " + userInfoDTO.getEmail() + " successfully logged in");
         return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
     }
 
